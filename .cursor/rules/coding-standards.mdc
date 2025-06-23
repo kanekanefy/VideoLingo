@@ -1,0 +1,34 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# VideoLingo 编码规范
+
+## Python 代码规范
+- 使用 Python 3.8+ 
+- 遵循 PEP 8 编码规范
+- 所有函数必须包含类型提示
+- 使用 docstring 记录函数用途和参数
+
+## 文件组织
+- 业务逻辑放在 `core/` 目录
+- API 接口放在 `backend/` 目录
+- UI 组件放在 `frontend/` 目录
+- 工具类放在 `utils/` 目录
+
+## 命名规范
+- 类名使用 PascalCase
+- 函数和变量使用 snake_case
+- 常量使用大写 SNAKE_CASE
+- 私有方法和变量以下划线开头
+
+## 注释规范
+- 使用中英双语注释
+- 复杂算法需要详细注释
+- 所有 TODO 项需要包含处理人和时间
+
+## 版本控制
+- 提交信息使用中英双语
+- 每个功能创建独立分支
+- 分支命名格式: feature/功能名称

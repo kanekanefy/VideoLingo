@@ -3,6 +3,7 @@ import streamlit as st
 import io, zipfile
 from core.st_utils.download_video_section import download_video_section
 from core.st_utils.sidebar_setting import page_setting
+from core.st_utils.terminology_section import terminology_management_section
 from translations.translations import translate as t
 
 def download_subtitle_zip_button(text: str):

@@ -10,6 +10,8 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from difflib import SequenceMatcher
 from core.utils.models import *
+from core.terminology.term_manager import TermManager
+from core.terminology.term_extractor import extract_terms_from_translation
 console = Console()
 
 # Function to split text into chunks
@@ -49,6 +51,48 @@ def translate_chunk(chunk, chunks, theme_prompt, i):
 # Add similarity calculation function
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+def apply_terminology_management(source_chunks, target_chunks):
+    """应用术语管理功能"""
+    try:
+        console.print("[bold cyan]🔧 Processing terminology...[/bold cyan]")
+        
+        # 初始化术语管理器
+        term_manager = TermManager()
+        
+        # 自动提取术语（如果术语库为空或术语很少）
+        current_terms = term_manager.get_all_terms()
+        if len(current_terms) < 10:
+            console.print("[cyan]Extracting terminology from translation...[/cyan]")
+            extraction_result = extract_terms_from_translation(source_chunks, target_chunks)
+            term_manager.update_auto_extracted_terms(extraction_result)
+            console.print(f"[green]✅ Extracted {len(extraction_result.get('suggested_pairs', []))} suggested term pairs[/green]")
+        
+        # 应用现有术语到翻译文本
+        if current_terms:
+            console.print("[cyan]Applying existing terminology...[/cyan]")
+            total_applied = 0
+            for i, target_text in enumerate(target_chunks):
+                if target_text:
+                    corrected_text, applied_terms = term_manager.apply_terms_to_text(target_text)
+                    if applied_terms:
+                        target_chunks[i] = corrected_text
+                        total_applied += len(applied_terms)
+            
+            if total_applied > 0:
+                console.print(f"[green]✅ Applied {total_applied} terminology corrections[/green]")
+            else:
+                console.print("[yellow]No terminology corrections needed[/yellow]")
+        
+        # 保存处理后的翻译文本
+        with open("output/log/translated_chunks.txt", 'w', encoding='utf-8') as f:
+            f.write('\n'.join(target_chunks))
+        
+        console.print("[bold green]✅ Terminology processing completed[/bold green]")
+        
+    except Exception as e:
+        console.print(f"[bold red]❌ Terminology processing failed: {e}[/bold red]")
+        # 即使术语处理失败，也不影响主翻译流程
 
 # 🚀 Main function to translate all chunks
 @check_file_exists(_4_2_TRANSLATION)
@@ -104,6 +148,9 @@ def translate_all():
     # apply check_len_then_trim to df_time['Translation'], only when duration > MIN_TRIM_DURATION.
     df_time['Translation'] = df_time.apply(lambda x: check_len_then_trim(x['Translation'], x['duration']) if x['duration'] > load_key("min_trim_duration") else x['Translation'], axis=1)
     console.print(df_time)
+    
+    # 💡 Apply terminology management
+    apply_terminology_management(src_text, trans_text)
     
     df_time.to_excel(_4_2_TRANSLATION, index=False)
     console.print("[bold green]✅ Translation completed and results saved.[/bold green]")

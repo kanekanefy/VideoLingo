@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>糖果弹弹球</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        overflow: hidden;
+        background-color: #ffebee;
+      }
+      #game-container {
+        position: relative;
+        width: 480px;
+        height: 320px;
+        margin: 0 auto;
+        background-color: #f8bbd0;
+        border: 8px solid #ff80ab;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-4xl font-bold mb-4 text-pink-600">糖果弹弹球</h1>
+    <div id="game-container">
+      <canvas id="game-canvas" width="480" height="320"></canvas>
+    </div>
+    <div class="mt-4 flex gap-4">
+      <button
+        id="toggle-ai"
+        class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
+      >
+        AI模式: 开启
+      </button>
+      <div class="px-4 py-2 bg-purple-500 text-white rounded-lg">
+        分数: <span id="score">0</span>
+      </div>
+      <div class="px-4 py-2 bg-blue-500 text-white rounded-lg">
+        生命: <span id="lives">3</span>
+      </div>
+    </div>
+
+    <script>
+      // 游戏状态
+      const gameState = {
+        score: 0,
+        lives: 3,
+        level: 1,
+        isAI: true,
+        gameOver: false,
+        paused: false
+      };
+
+      // 初始化Canvas
+      const canvas = document.getElementById("game-canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 游戏元素
+      const ball = {
+        x: canvas.width / 2,
+        y: canvas.height - 30,
+        radius: 8,
+        dx: 4,
+        dy: -4,
+        color: "#FF5252"
+      };
+
+      const paddle = {
+        width: 80,
+        height: 12,
+        x: (canvas.width - 80) / 2,
+        y: canvas.height - 20,
+        color: "#7C4DFF",
+        speed: 8
+      };
+
+      // 砖块配置
+      const brickConfig = {
+        rowCount: 3,
+        columnCount: 7,
+        width: 60,
+        height: 20,
+        padding: 10,
+        offsetTop: 40,
+        offsetLeft: 30
+      };
+
+      // 创建砖块
+      const bricks = [];
+      for (let c = 0; c < brickConfig.columnCount; c++) {
+        bricks[c] = [];
+        for (let r = 0; r < brickConfig.rowCount; r++) {
+          const brickX =
+            c * (brickConfig.width + brickConfig.padding) +
+            brickConfig.offsetLeft;
+          const brickY =
+            r * (brickConfig.height + brickConfig.padding) +
+            brickConfig.offsetTop;
+          const colors = ["#FF9800", "#4CAF50", "#2196F3"];
+          const types = [1, 2, 3]; // 1:普通, 2:坚固, 3:特殊
+
+          bricks[c][r] = {
+            x: brickX,
+            y: brickY,
+            status: 1,
+            type: types[r],
+            color: colors[r]
+          };
+        }
+      }
+
+      // 音频上下文
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+
+      // 生成8位音效
+      function playSound(frequency, type = "square", duration = 0.1) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.value = frequency;
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + duration
+        );
+
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+      }
+
+      // 碰撞检测
+      function collisionDetection() {
+        for (let c = 0; c < brickConfig.columnCount; c++) {
+          for (let r = 0; r < brickConfig.rowCount; r++) {
+            const brick = bricks[c][r];
+            if (brick.status === 1) {
+              if (
+                ball.x > brick.x &&
+                ball.x < brick.x + brickConfig.width &&
+                ball.y > brick.y &&
+                ball.y < brick.y + brickConfig.height
+              ) {
+                ball.dy = -ball.dy;
+
+                // 根据砖块类型处理
+                if (brick.type === 1) {
+                  brick.status = 0;
+                  gameState.score += 10;
+                  playSound(440, "square");
+                } else if (brick.type === 2) {
+                  brick.type = 1; // 变为普通砖块
+                  playSound(220, "square");
+                } else {
+                  brick.status = 0;
+                  gameState.score += 30;
+                  playSound(880, "triangle");
+                }
+
+                // 检查是否所有砖块都被清除
+                if (checkLevelComplete()) {
+                  gameState.level++;
+                  resetLevel();
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // AI控制逻辑
+      function aiControl() {
+        if (!gameState.isAI) return;
+
+        // 简单AI: 预测球的位置并移动挡板
+        const predictX = ball.x + ball.dx * ((paddle.y - ball.y) / ball.dy);
+        paddle.x = predictX - paddle.width / 2;
+
+        // 限制挡板不超出画布
+        if (paddle.x < 0) {
+          paddle.x = 0;
+        } else if (paddle.x + paddle.width > canvas.width) {
+          paddle.x = canvas.width - paddle.width;
+        }
+      }
+
+      // 绘制游戏元素
+      function draw() {
+        // 清空画布
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 绘制球
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ball.color;
+        ctx.fill();
+        ctx.closePath();
+
+        // 绘制挡板
+        ctx.beginPath();
+        ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+        ctx.fillStyle = paddle.color;
+        ctx.fill();
+        ctx.closePath();
+
+        // 绘制砖块
+        for (let c = 0; c < brickConfig.columnCount; c++) {
+          for (let r = 0; r < brickConfig.rowCount; r++) {
+            if (bricks[c][r].status === 1) {
+              ctx.beginPath();
+              ctx.rect(
+                bricks[c][r].x,
+                bricks[c][r].y,
+                brickConfig.width,
+                brickConfig.height
+              );
+              ctx.fillStyle = bricks[c][r].color;
+              ctx.fill();
+              ctx.closePath();
+            }
+          }
+        }
+
+        // 绘制分数和生命
+        document.getElementById("score").textContent = gameState.score;
+        document.getElementById("lives").textContent = gameState.lives;
+      }
+
+      // 游戏主循环
+      function gameLoop() {
+        if (gameState.gameOver || gameState.paused) return;
+
+        // 移动球
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        // 边界碰撞检测
+        if (
+          ball.x + ball.dx > canvas.width - ball.radius ||
+          ball.x + ball.dx < ball.radius
+        ) {
+          ball.dx = -ball.dx;
+          playSound(330, "square");
+        }
+
+        if (ball.y + ball.dy < ball.radius) {
+          ball.dy = -ball.dy;
+          playSound(440, "square");
+        } else if (ball.y + ball.dy > canvas.height - ball.radius) {
+          // 球落到底部
+          if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+            // 计算反弹角度 (根据击中挡板的位置)
+            const hitPosition =
+              (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+            ball.dx = hitPosition * 5;
+            ball.dy = -Math.abs(ball.dy);
+            playSound(550, "square");
+          } else {
+            // 失去生命
+            gameState.lives--;
+            playSound(110, "sine", 0.3);
+
+            if (gameState.lives <= 0) {
+              gameState.gameOver = true;
+              alert("游戏结束! 你的分数: " + gameState.score);
+              document.location.reload();
+            } else {
+              resetBall();
+            }
+          }
+        }
+
+        // AI控制
+        aiControl();
+
+        // 碰撞检测
+        collisionDetection();
+
+        // 绘制游戏
+        draw();
+
+        // 继续游戏循环
+        requestAnimationFrame(gameLoop);
+      }
+
+      // 重置球位置
+      function resetBall() {
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - 30;
+        ball.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
+        ball.dy = -4;
+      }
+
+      // 重置关卡
+      function resetLevel() {
+        resetBall();
+        for (let c = 0; c < brickConfig.columnCount; c++) {
+          for (let r = 0; r < brickConfig.rowCount; r++) {
+            const colors = ["#FF9800", "#4CAF50", "#2196F3"];
+            const types = [1, 2, 3];
+            bricks[c][r] = {
+              x:
+                c * (brickConfig.width + brickConfig.padding) +
+                brickConfig.offsetLeft,
+              y:
+                r * (brickConfig.height + brickConfig.padding) +
+                brickConfig.offsetTop,
+              status: 1,
+              type: types[r],
+              color: colors[r]
+            };
+          }
+        }
+      }
+
+      // 检查关卡是否完成
+      function checkLevelComplete() {
+        for (let c = 0; c < brickConfig.columnCount; c++) {
+          for (let r = 0; r < brickConfig.rowCount; r++) {
+            if (bricks[c][r].status === 1) {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      // 键盘控制
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          paddle.x = Math.min(
+            paddle.x + paddle.speed,
+            canvas.width - paddle.width
+          );
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          paddle.x = Math.max(paddle.x - paddle.speed, 0);
+        } else if (e.key === " ") {
+          if (gameState.gameOver) {
+            document.location.reload();
+          } else {
+            gameState.paused = !gameState.paused;
+            if (!gameState.paused) {
+              gameLoop();
+            }
+          }
+        }
+      });
+
+      // 鼠标/触摸控制
+      canvas.addEventListener("mousemove", (e) => {
+        if (!gameState.isAI) {
+          const relativeX = e.clientX - canvas.offsetLeft;
+          if (relativeX > 0 && relativeX < canvas.width) {
+            paddle.x = relativeX - paddle.width / 2;
+            paddle.x = Math.max(
+              0,
+              Math.min(paddle.x, canvas.width - paddle.width)
+            );
+          }
+        }
+      });
+
+      // 切换AI模式
+      document.getElementById("toggle-ai").addEventListener("click", () => {
+        gameState.isAI = !gameState.isAI;
+        document.getElementById("toggle-ai").textContent = `AI模式: ${
+          gameState.isAI ? "开启" : "关闭"
+        }`;
+      });
+
+      // 开始游戏
+      resetLevel();
+      gameLoop();
+
+      // 背景音乐
+      function playBackgroundMusic() {
+        const sequence = [
+          { note: 392, duration: 0.3 }, // G4
+          { note: 440, duration: 0.3 }, // A4
+          { note: 494, duration: 0.3 }, // B4
+          { note: 523, duration: 0.6 } // C5
+        ];
+
+        let time = audioContext.currentTime;
+
+        sequence.forEach((step, i) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.type = "square";
+          oscillator.frequency.value = step.note;
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          gainNode.gain.setValueAtTime(0.1, time);
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.001,
+            time + step.duration
+          );
+
+          oscillator.start(time);
+          oscillator.stop(time + step.duration);
+
+          time += step.duration;
+        });
+
+        // 循环播放
+        setTimeout(playBackgroundMusic, time * 1000);
+      }
+
+      // 开始背景音乐
+      setTimeout(playBackgroundMusic, 1000);
+    </script>
+  </body>
+</html>

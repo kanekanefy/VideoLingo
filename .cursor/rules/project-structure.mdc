@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# VideoLingo 项目结构指南
+
+VideoLingo 是一个视频翻译和学习平台。以下是主要组件的说明：
+
+## 核心组件
+- [config.yaml](mdc:config.yaml) - 主要配置文件
+- [requirements.txt](mdc:requirements.txt) - Python 依赖管理
+- [install.py](mdc:install.py) - 安装脚本
+- [st.py](mdc:st.py) - Streamlit 应用主入口
+
+## 目录结构
+- `backend/` - 后端服务
+- `frontend/` - 前端界面
+- `core/` - 核心业务逻辑
+- `translations/` - 翻译相关文件
+- `docs/` - 项目文档
+- `st_components/` - Streamlit 自定义组件
+- `batch/` - 批处理脚本
+
+## 配置和数据
+- [custom_terms.xlsx](mdc:custom_terms.xlsx) - 自定义术语表
+- [companies.csv](mdc:companies.csv) - 公司数据
+
+## 开发工具
+- [Dockerfile](mdc:Dockerfile) - 容器化配置
+- [OneKeyStart.bat](mdc:OneKeyStart.bat) - 快速启动脚本

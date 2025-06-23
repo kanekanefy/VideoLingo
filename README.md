@@ -64,7 +64,6 @@ https://github.com/user-attachments/assets/47d965b2-b4ab-4a0b-9d08-b49a7bf3508c
 </td>
 </tr>
 </table>
-
 ### Language Support
 
 **Input Language Support(more to come):**

@@ -118,6 +118,7 @@ def main():
         st.markdown(give_star_button, unsafe_allow_html=True)
     download_video_section()
     text_processing_section()
+    terminology_management_section()
     audio_processing_section()
 
 if __name__ == "__main__":
