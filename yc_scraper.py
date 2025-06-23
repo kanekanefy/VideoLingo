@@ -1,9 +1,10 @@
 import requests
 import csv
+import os
 
 # 从 firecrawl 批次爬取结果的 API 端点（此 URL 由 firecrawl 返回）
 EXTRACTION_URL = "https://api.firecrawl.dev/v1/batch/scrape/2b1b33d9-8a29-4443-ac46-bd152ff09fb3"
-FIRECRAWL_API_TOKEN = "fc-ede6b46b501740feb65252f1a86dc168"
+FIRECRAWL_API_TOKEN = os.getenv("FIRECRAWL_API_TOKEN", "YOUR_FIRECRAWL_API_TOKEN_HERE")
 
 def fetch_extraction_results():
     headers = {"Authorization": f"Bearer {FIRECRAWL_API_TOKEN}"}
