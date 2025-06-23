@@ -15,6 +15,20 @@ from .project_manager import ProjectManager, ProjectStatus, ProjectType
 from .project_templates import ProjectTemplateManager
 from .progress_tracker import ProgressTracker, TaskStatus, TaskPriority
 
+# Import version control if available
+try:
+    from ..version_control.version_dashboard import VersionControlDashboard
+    VERSION_CONTROL_AVAILABLE = True
+except ImportError:
+    VERSION_CONTROL_AVAILABLE = False
+
+# Import emotion analysis if available
+try:
+    from ..emotion_analysis.emotion_dashboard import EmotionAnalysisDashboard
+    EMOTION_ANALYSIS_AVAILABLE = True
+except ImportError:
+    EMOTION_ANALYSIS_AVAILABLE = False
+
 def create_project_dashboard():
     """创建项目管理仪表板"""
     
@@ -30,9 +44,18 @@ def create_project_dashboard():
     template_manager = st.session_state.template_manager
     
     # 创建标签页
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 项目概览", "➕ 创建项目", "📁 项目列表", "📈 项目详情", "⚙️ 模板管理"
-    ])
+    tabs = ["📊 项目概览", "➕ 创建项目", "📁 项目列表", "📈 项目详情", "⚙️ 模板管理"]
+    
+    # Add version control tab if available
+    if VERSION_CONTROL_AVAILABLE:
+        tabs.append("🔄 版本管理")
+    
+    # Add emotion analysis tab if available
+    if EMOTION_ANALYSIS_AVAILABLE:
+        tabs.append("🎭 情感分析")
+    
+    tab_objects = st.tabs(tabs)
+    tab1, tab2, tab3, tab4, tab5 = tab_objects[:5]
     
     with tab1:
         _project_overview(project_manager)
@@ -48,6 +71,28 @@ def create_project_dashboard():
     
     with tab5:
         _template_management_interface(template_manager)
+    
+    # Version control tab
+    current_tab_index = 5
+    if VERSION_CONTROL_AVAILABLE and len(tab_objects) > current_tab_index:
+        with tab_objects[current_tab_index]:
+            active_project_id = project_manager.get_active_project()
+            if active_project_id:
+                version_dashboard = VersionControlDashboard()
+                version_dashboard.render_dashboard(active_project_id)
+            else:
+                st.info("请先选择一个项目以使用版本管理功能")
+        current_tab_index += 1
+    
+    # Emotion analysis tab
+    if EMOTION_ANALYSIS_AVAILABLE and len(tab_objects) > current_tab_index:
+        with tab_objects[current_tab_index]:
+            active_project_id = project_manager.get_active_project()
+            if active_project_id:
+                emotion_dashboard = EmotionAnalysisDashboard()
+                emotion_dashboard.render_dashboard(active_project_id)
+            else:
+                st.info("请先选择一个项目以使用情感分析功能")
 
 def _project_overview(project_manager: ProjectManager):
     """项目概览界面"""
