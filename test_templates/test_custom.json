@@ -1,0 +1,22 @@
+{
+  "id": "test_custom",
+  "name": "测试自定义模板",
+  "description": "用于测试的自定义模板",
+  "project_type": "other",
+  "config": {
+    "api": {
+      "model": "claude-3-5-sonnet"
+    },
+    "whisper": {
+      "model": "large-v3"
+    },
+    "tts_method": "azure_tts",
+    "custom_feature": true,
+    "test_mode": true
+  },
+  "tags": [
+    "测试",
+    "自定义"
+  ],
+  "icon": "🧪"
+}

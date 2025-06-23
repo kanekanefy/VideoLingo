@@ -1,0 +1,34 @@
+{
+  "id": "commercial",
+  "name": "广告片",
+  "description": "适用于广告和宣传片，注重品牌信息和营销效果",
+  "project_type": "commercial",
+  "icon": "📢",
+  "tags": [
+    "广告",
+    "营销",
+    "品牌"
+  ],
+  "config": {
+    "display_language": "zh-CN",
+    "api": {
+      "model": "claude-3-5-sonnet",
+      "max_workers": 4
+    },
+    "whisper": {
+      "model": "large-v3-turbo",
+      "runtime": "cloud"
+    },
+    "tts_method": "openai_tts",
+    "burn_subtitles": true,
+    "subtitle": {
+      "max_length": 30,
+      "target_multiplier": 0.8
+    },
+    "brand_consistency": true,
+    "marketing_optimization": true,
+    "call_to_action": true,
+    "quick_turnaround": true,
+    "quality_threshold": 0.85
+  }
+}

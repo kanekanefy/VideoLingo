@@ -1,0 +1,41 @@
+{
+  "id": "2cb4f1c3-20a8-4b1a-8ef2-99fae42894e6",
+  "name": "集成测试项目",
+  "description": "使用好莱坞电影模板的测试项目",
+  "project_type": "movie",
+  "status": "created",
+  "created_at": "2025-06-23T18:02:47.335016",
+  "updated_at": "2025-06-23T18:02:47.335016",
+  "source_language": "en",
+  "target_languages": [
+    "zh-CN"
+  ],
+  "config": {
+    "display_language": "zh-CN",
+    "api": {
+      "key": "your-api-key",
+      "base_url": "https://yunwu.ai",
+      "model": "gpt-4.1-2025-04-14"
+    },
+    "whisper": {
+      "model": "large-v3",
+      "language": "en",
+      "runtime": "local"
+    },
+    "tts_method": "azure_tts",
+    "burn_subtitles": true,
+    "max_workers": 4,
+    "terminology_enabled": true,
+    "emotion_analysis_enabled": true,
+    "version_control_enabled": true
+  },
+  "tags": [
+    "测试",
+    "集成"
+  ],
+  "category": "test",
+  "created_by": "user",
+  "total_duration": null,
+  "progress_percentage": 0.0,
+  "current_version": "1.0.0"
+}

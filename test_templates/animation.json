@@ -1,0 +1,34 @@
+{
+  "id": "animation",
+  "name": "动画片",
+  "description": "适用于动画电影和动画剧集，适配夸张表达和儿童友好内容",
+  "project_type": "animation",
+  "icon": "🎪",
+  "tags": [
+    "动画",
+    "儿童",
+    "家庭"
+  ],
+  "config": {
+    "display_language": "zh-CN",
+    "api": {
+      "model": "gemini-2.0-flash",
+      "max_workers": 6
+    },
+    "whisper": {
+      "model": "large-v3",
+      "runtime": "local"
+    },
+    "tts_method": "sf_fish_tts",
+    "burn_subtitles": true,
+    "subtitle": {
+      "max_length": 35,
+      "target_multiplier": 0.9
+    },
+    "child_friendly": true,
+    "exaggerated_expressions": true,
+    "character_voices": true,
+    "family_appropriate": true,
+    "quality_threshold": 0.8
+  }
+}

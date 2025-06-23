@@ -1,0 +1,34 @@
+{
+  "id": "documentary",
+  "name": "纪录片",
+  "description": "适用于纪录片翻译，注重准确性和专业术语",
+  "project_type": "documentary",
+  "icon": "📚",
+  "tags": [
+    "纪录片",
+    "教育",
+    "专业"
+  ],
+  "config": {
+    "display_language": "zh-CN",
+    "api": {
+      "model": "gpt-4.1",
+      "max_workers": 4
+    },
+    "whisper": {
+      "model": "large-v3",
+      "runtime": "local"
+    },
+    "tts_method": "azure_tts",
+    "burn_subtitles": true,
+    "subtitle": {
+      "max_length": 60,
+      "target_multiplier": 1.2
+    },
+    "factual_accuracy": true,
+    "terminology_strict": true,
+    "professional_terms": true,
+    "preserve_narration_style": true,
+    "quality_threshold": 0.95
+  }
+}

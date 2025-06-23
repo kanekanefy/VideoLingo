@@ -1,0 +1,363 @@
+{
+  "tasks": [
+    {
+      "id": "setup_project",
+      "name": "项目设置",
+      "description": "配置项目参数和初始化环境",
+      "status": "completed",
+      "priority": "high",
+      "progress": 1.0,
+      "estimated_duration": 10,
+      "actual_duration": 0,
+      "started_at": "2025-06-23T18:02:47.335854",
+      "completed_at": "2025-06-23T18:02:47.336225",
+      "dependencies": [],
+      "assigned_to": "system",
+      "tags": [
+        "setup"
+      ]
+    },
+    {
+      "id": "upload_video",
+      "name": "上传视频文件",
+      "description": "上传或下载待翻译的视频文件",
+      "status": "completed",
+      "priority": "high",
+      "progress": 1.0,
+      "estimated_duration": 15,
+      "actual_duration": 0,
+      "started_at": "2025-06-23T18:02:47.336623",
+      "completed_at": "2025-06-23T18:02:47.337140",
+      "dependencies": [
+        "setup_project"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "upload"
+      ]
+    },
+    {
+      "id": "audio_preprocessing",
+      "name": "音频预处理",
+      "description": "音频分离和降噪处理",
+      "status": "completed",
+      "priority": "medium",
+      "progress": 1.0,
+      "estimated_duration": 30,
+      "actual_duration": 0,
+      "started_at": "2025-06-23T18:02:47.337529",
+      "completed_at": "2025-06-23T18:02:47.337905",
+      "dependencies": [
+        "upload_video"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "audio",
+        "preprocessing"
+      ]
+    },
+    {
+      "id": "speech_recognition",
+      "name": "语音识别",
+      "description": "使用WhisperX进行语音转文字",
+      "status": "pending",
+      "priority": "high",
+      "progress": 0.0,
+      "estimated_duration": 60,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "audio_preprocessing"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "whisper",
+        "transcription"
+      ]
+    },
+    {
+      "id": "text_segmentation",
+      "name": "文本分句",
+      "description": "NLP和LLM智能分句处理",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 20,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "speech_recognition"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "nlp",
+        "segmentation"
+      ]
+    },
+    {
+      "id": "content_analysis",
+      "name": "内容分析",
+      "description": "总结内容主题和提取术语",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 25,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "text_segmentation"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "analysis",
+        "terminology"
+      ]
+    },
+    {
+      "id": "translation",
+      "name": "翻译处理",
+      "description": "多步骤高质量翻译",
+      "status": "pending",
+      "priority": "high",
+      "progress": 0.0,
+      "estimated_duration": 90,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "content_analysis"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "translation",
+        "llm"
+      ]
+    },
+    {
+      "id": "terminology_check",
+      "name": "术语检查",
+      "description": "术语一致性检查和修正",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 15,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "translation"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "terminology",
+        "quality"
+      ]
+    },
+    {
+      "id": "subtitle_timing",
+      "name": "字幕时间轴",
+      "description": "生成精确的字幕时间轴",
+      "status": "pending",
+      "priority": "high",
+      "progress": 0.0,
+      "estimated_duration": 30,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "terminology_check"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "subtitle",
+        "timing"
+      ]
+    },
+    {
+      "id": "subtitle_generation",
+      "name": "字幕生成",
+      "description": "生成最终字幕文件",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 20,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "subtitle_timing"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "subtitle",
+        "generation"
+      ]
+    },
+    {
+      "id": "voice_cloning",
+      "name": "声音克隆",
+      "description": "提取和克隆原始声音特征",
+      "status": "pending",
+      "priority": "low",
+      "progress": 0.0,
+      "estimated_duration": 45,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "subtitle_generation"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "tts",
+        "voice"
+      ]
+    },
+    {
+      "id": "audio_generation",
+      "name": "音频生成",
+      "description": "生成配音音频文件",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 60,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "voice_cloning"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "tts",
+        "audio"
+      ]
+    },
+    {
+      "id": "audio_mixing",
+      "name": "音频合成",
+      "description": "将配音与原视频合成",
+      "status": "pending",
+      "priority": "medium",
+      "progress": 0.0,
+      "estimated_duration": 25,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "audio_generation"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "audio",
+        "mixing"
+      ]
+    },
+    {
+      "id": "quality_review",
+      "name": "质量审核",
+      "description": "最终质量检查和验收",
+      "status": "pending",
+      "priority": "high",
+      "progress": 0.0,
+      "estimated_duration": 30,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "audio_mixing"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "quality",
+        "review"
+      ]
+    },
+    {
+      "id": "output_packaging",
+      "name": "输出打包",
+      "description": "打包输出文件和生成报告",
+      "status": "pending",
+      "priority": "low",
+      "progress": 0.0,
+      "estimated_duration": 10,
+      "actual_duration": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [
+        "quality_review"
+      ],
+      "assigned_to": "system",
+      "tags": [
+        "output",
+        "packaging"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "transcription_complete",
+      "name": "转录完成",
+      "description": "语音识别和文本分句完成",
+      "target_date": "2025-06-24T18:02:47.335298",
+      "completed_date": null,
+      "progress": 0.0,
+      "tasks": [
+        "speech_recognition",
+        "text_segmentation"
+      ]
+    },
+    {
+      "id": "translation_complete",
+      "name": "翻译完成",
+      "description": "翻译和术语检查完成",
+      "target_date": "2025-06-26T18:02:47.335298",
+      "completed_date": null,
+      "progress": 0.0,
+      "tasks": [
+        "translation",
+        "terminology_check"
+      ]
+    },
+    {
+      "id": "subtitle_complete",
+      "name": "字幕完成",
+      "description": "字幕生成和时间轴对齐完成",
+      "target_date": "2025-06-27T18:02:47.335298",
+      "completed_date": null,
+      "progress": 0.0,
+      "tasks": [
+        "subtitle_timing",
+        "subtitle_generation"
+      ]
+    },
+    {
+      "id": "dubbing_complete",
+      "name": "配音完成",
+      "description": "配音生成和音频合成完成",
+      "target_date": "2025-06-29T18:02:47.335298",
+      "completed_date": null,
+      "progress": 0.0,
+      "tasks": [
+        "audio_generation",
+        "audio_mixing"
+      ]
+    },
+    {
+      "id": "project_complete",
+      "name": "项目完成",
+      "description": "所有任务完成，项目交付",
+      "target_date": "2025-06-30T18:02:47.335298",
+      "completed_date": null,
+      "progress": 0.0,
+      "tasks": [
+        "quality_review",
+        "output_packaging"
+      ]
+    }
+  ],
+  "last_updated": "2025-06-23T18:02:47.337999"
+}

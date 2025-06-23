@@ -116,10 +116,17 @@ def main():
     with st.sidebar:
         page_setting()
         st.markdown(give_star_button, unsafe_allow_html=True)
-    download_video_section()
-    text_processing_section()
-    terminology_management_section()
-    audio_processing_section()
+    # 检查是否显示项目管理界面
+    if st.sidebar.button("🎬 项目管理", key="project_management"):
+        st.session_state.show_project_management = True
+    
+    if st.session_state.get('show_project_management', False):
+        create_project_dashboard()
+    else:
+        download_video_section()
+        text_processing_section()
+        terminology_management_section()
+        audio_processing_section()
 
 if __name__ == "__main__":
     main()

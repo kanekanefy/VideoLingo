@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "terms": {
+    "AI": "人工智能",
+    "machine learning": "机器学习",
+    "OpenAI": "OpenAI",
+    "neural network": "神经网络",
+    "ChatGPT": "ChatGPT"
+  },
+  "categories": {
+    "AI": "技术术语",
+    "machine learning": "技术术语",
+    "OpenAI": "品牌",
+    "neural network": "技术术语",
+    "ChatGPT": "产品"
+  },
+  "priorities": {
+    "AI": 5,
+    "machine learning": 4,
+    "OpenAI": 3,
+    "neural network": 4,
+    "ChatGPT": 3
+  },
+  "notes": {
+    "AI": "核心技术概念",
+    "machine learning": "AI子领域",
+    "OpenAI": "AI公司",
+    "neural network": "深度学习基础",
+    "ChatGPT": "对话AI产品"
+  }
+}

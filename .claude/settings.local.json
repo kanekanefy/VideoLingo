@@ -6,7 +6,9 @@
       "Bash(env)",
       "Bash(find:*)",
       "Bash(ls:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(git commit:*)",
+      "Bash(streamlit run:*)"
     ],
     "deny": []
   }

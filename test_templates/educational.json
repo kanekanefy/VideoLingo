@@ -1,0 +1,34 @@
+{
+  "id": "educational",
+  "name": "教育内容",
+  "description": "适用于在线课程和教育视频，注重知识传达的准确性",
+  "project_type": "educational",
+  "icon": "🎓",
+  "tags": [
+    "教育",
+    "课程",
+    "学习"
+  ],
+  "config": {
+    "display_language": "zh-CN",
+    "api": {
+      "model": "gpt-4.1",
+      "max_workers": 4
+    },
+    "whisper": {
+      "model": "large-v3",
+      "runtime": "local"
+    },
+    "tts_method": "azure_tts",
+    "burn_subtitles": true,
+    "subtitle": {
+      "max_length": 55,
+      "target_multiplier": 1.3
+    },
+    "educational_terms": true,
+    "clear_pronunciation": true,
+    "knowledge_accuracy": true,
+    "learning_optimization": true,
+    "quality_threshold": 0.92
+  }
+}
